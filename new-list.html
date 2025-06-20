@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a New List</title>
+    <link rel = "stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class = "newlist-header">
+        <img class="photo" src = "grocer-photo.png" width="275">
+        <h1 id="listName" contenteditable="true" spellcheck="false" style="cursor: text; font-weight: 500; border-bottom: 2px dashed #efb79f; padding: 8px 12px; margin-bottom: 20px; width: 80%; max-width: 600px; text-align: center;">
+            New List Name
+        </h1>
+        <p style="font-size: 23px; color: #000;">Check the boxes that fit your Grocery Criteria</p>
+        <div class = "back-to-home-btn">
+            <button class = "acct-btn" style = "font-weight:normal;"><a href="landing-page.html">Back to homepage</a></button><br>
+        </div>
+    </div>
+    <h2>Diet Type</h2>
+    <div class="newL-btns">
+        <label class="container">Halal
+            <input type="checkbox" id="halal">
+            <span class="checkmark"></span>
+        </label>
+        <label class="container">Kosher
+            <input type="checkbox" id="kosher">
+            <span class="checkmark"></span>
+        </label>
+        <label class="container">Omnivore
+            <input type="checkbox" id="omnivore">
+            <span class="checkmark"></span>
+        </label>
+        <label class="container">Pescatarian
+            <input type="checkbox" id="pescatarian">
+            <span class="checkmark"></span>
+        </label>
+        <label class="container">Vegan
+            <input type="checkbox" id="vegan">
+            <span class="checkmark"></span>
+        </label>
+
+        <label class="container">Vegetarian
+            <input type="checkbox" id="vegetarian">
+            <span class="checkmark"></span>
+        </label>
+    </div><br><br>
+    <script>
+    const dietCheckboxes = {
+        halal: document.getElementById('halal'),
+        kosher: document.getElementById('kosher'),
+        omnivore: document.getElementById('omnivore'),
+        pescatarian: document.getElementById('pescatarian'),
+        vegan: document.getElementById('vegan'),
+        vegetarian: document.getElementById('vegetarian')
+    };
+
+    Object.keys(dietCheckboxes).forEach((key) => {
+        dietCheckboxes[key].addEventListener('change', function () {
+            if (this.checked) {
+                // Uncheck all others
+                Object.keys(dietCheckboxes).forEach(otherKey => {
+                    if (otherKey !== key) {
+                        dietCheckboxes[otherKey].checked = false;
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+    <h2>Dietary Restrictions</h2>
+    <div class = "newL-btns">
+        <div class="dropdown">
+    <label class="container">
+        Yes
+        <input type="checkbox" id="yesCheckbox">
+        <span class="checkmark"></span>
+    </label>
+
+    <div class="dropdown-content">
+        <div id="moreOptions" style="display: none;">
+            <label class="container">Gluten free
+                <input type="checkbox">
+                <span class="checkmark"></span>
+            </label>
+            <label class="container">Peanut allergy
+                <input type="checkbox">
+                <span class="checkmark"></span>
+            </label>
+            <label class="container">Tree nuts allergy
+                <input type="checkbox">
+                <span class="checkmark"></span>
+            </label>
+            <label class="container">Dairy products allergy
+                <input type="checkbox">
+                <span class="checkmark"></span>
+            </label>
+            <label class="container">Seafood and shellfish
+                <input type="checkbox">
+                <span class="checkmark"></span>
+            </label>
+        </div>
+    </div>
+        <label class="container">
+        No
+        <input type="checkbox" id="noCheckbox">
+        <span class="checkmark"></span>
+    </label>
+</div>
+
+<script>
+    const yes = document.getElementById('yesCheckbox');
+    const no = document.getElementById('noCheckbox');
+    const options = document.getElementById('moreOptions');
+
+    yes.addEventListener('change', function () {
+        if (yes.checked) {
+            no.checked = false;
+            options.style.display = 'block';
+        } else {
+            options.style.display = 'none';
+        }
+    });
+
+    no.addEventListener('change', function () {
+        if (no.checked) {
+            yes.checked = false;
+            options.style.display = 'none';
+        }
+    });
+</script>
+    </div><br><br>
+
+    <h2>Max Cost</h2>
+    <div class="slidecontainer">
+        <input type="range" min="10" max="300" value="150" class="slider" id="myRange">
+        <span id = "sliderTooltip" class="tooltip">$50</span>
+    </div>
+
+    <script>
+    const slider = document.getElementById("myRange");
+    const tooltip = document.getElementById("sliderTooltip");
+
+    function updateTooltip() {
+        const value = slider.value;
+        const sliderWidth = slider.offsetWidth;
+        const min = slider.min;
+        const max = slider.max;
+
+        const percent = (value - min) / (max - min);
+        const thumbOffset = 12.5; // half of thumb width (25px)
+
+        const offset = percent * (sliderWidth - 25) + thumbOffset;
+        tooltip.style.left = `${slider.offsetLeft + offset}px`;
+        tooltip.textContent = `$${value}`;
+    }
+
+    slider.addEventListener("input", updateTooltip);
+    window.addEventListener("load", updateTooltip); // initialize on page load
+    </script>
+    
+    <h2>Serving Size</h2>
+    <div class="serving-size">
+        <label for="servingInput">Number of people:</label>
+        <input type="number" id="servingInput" name="servingSize" min="1" max = "10" value="1" style="width: 60px; margin-left: 8px;">
+    </div><br><br>
+
+    <h2>Duration of Use</h2>
+    <div class="duration-use">
+        <label for="durationInput">Number of days:</label>
+        <input type="number" id="durationInput" name="durationUse" min="1" max="14" value="7" style="width: 60px; margin-left: 8px;">
+    </div><br>
+
+    <div class = "genList">
+        <button class = "gen-btn" id="generateBtn">Generate List</button><br>
+    </div><br><br><br><br>
+
+    <script type="text/javascript" src="list.js"></script>
+
+</body>
+</html>

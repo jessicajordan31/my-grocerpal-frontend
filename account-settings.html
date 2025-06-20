@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Account Settings</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="account-header">
+        <img class="photo" src="grocer-photo.png" width="250" />
+        <h1>Account Settings</h1>
+    </div>
+    <div class="back-to-home-btn">
+        <button class="acct-btn" style="font-weight: normal;">
+            <a href="landing-page.html">Back to homepage</a>
+        </button><br />
+    </div>
+    <div class="account-info">
+        <h2>Name: <span id="userName"></span></h2><br /><br />
+        <h2>Email: <span id="userEmail"></span></h2><br /><br />
+        <h2>Password: <input type="password" id="userPassword" value="********" readonly /></h2>
+    </div>
+    <!-- Password Change Modal -->
+<div id="passwordModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span class="closeBtn">&times;</span>
+    <h3>Change Password</h3>
+    <form id="passwordForm">
+      <label for="newPassword">New Password:</label><br>
+      <input type="password" id="newPassword" required minlength="8" /><br><br>
+      <label for="confirmPassword">Confirm Password:</label><br>
+      <input type="password" id="confirmPassword" required minlength="8" /><br><br>
+      <button type="submit" class="acct-btn">Submit</button>
+    </form>
+    <div id="passwordError" style="color:red; margin-top:10px;"></div>
+  </div>
+</div>
+
+
+    <div class="edit-account-btns">
+        <button class="acct-btn" id="changePasswordBtn">Change password</button><br />
+        <button class="acct-btn" id="deleteAccountBtn">Delete account</button><br />
+        <button class="acct-btn" id="logoutBtn">Log out</button><br />
+    </div>
+
+    <script>
+        // Load user info on page load
+
+        const API_BASE_URL = 'http://localhost:3000';
+
+async function loadUserInfo() {
+  try {
+    const response = await fetch('http://localhost:3000/api/user/profile', {
+      credentials: 'include',  // this is important to send cookies
+      method: 'GET',
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch user info');
+
+    const user = await response.json();
+    document.getElementById('userName').innerText = user.name || '';
+    document.getElementById('userEmail').innerText = user.email || '';
+    document.getElementById('userPassword').value = '********'; // mask password
+  } catch (error) {
+    console.error(error);
+    alert('Error loading user information. Please try again.');
+    // optionally redirect if unauthorized
+    if (error.message.includes('Failed to fetch')) {
+      window.location.href = 'log-in.html';
+    }
+  }
+}
+ window.addEventListener('DOMContentLoaded', loadUserInfo);
+
+        // Change Password button click handler
+        const modal = document.getElementById('passwordModal');
+const closeBtn = modal.querySelector('.closeBtn');
+const passwordForm = document.getElementById('passwordForm');
+const passwordError = document.getElementById('passwordError');
+
+document.getElementById('changePasswordBtn').addEventListener('click', () => {
+  passwordError.innerText = '';
+  passwordForm.reset();
+  modal.style.display = 'flex';
+});
+
+closeBtn.addEventListener('click', () => {
+  modal.style.display = 'none';
+});
+
+window.addEventListener('click', e => {
+  if (e.target === modal) {
+    modal.style.display = 'none';
+  }
+});
+
+passwordForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  passwordError.innerText = '';
+
+  const newPassword = passwordForm.newPassword.value.trim();
+  const confirmPassword = passwordForm.confirmPassword.value.trim();
+
+  // Validation
+  if (newPassword.length < 8) {
+    passwordError.innerText = 'Password must be at least 8 characters long.';
+    return;
+  }
+  if (newPassword !== confirmPassword) {
+    passwordError.innerText = 'Passwords do not match.';
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/user/change-password', {
+      method: 'POST',
+      credentials: 'include',  // send cookie token
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: newPassword })
+    });
+
+    if (!response.ok) {
+      const errData = await response.json();
+      throw new Error(errData.message || 'Failed to change password');
+    }
+
+    alert('Password changed successfully!');
+    modal.style.display = 'none';
+  } catch (err) {
+    passwordError.innerText = err.message;
+  }
+});
+
+        // Delete Account button click handler
+        document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
+            const confirmDelete = confirm(
+                'Are you sure you want to delete your account? This action cannot be undone.'
+            );
+            if (!confirmDelete) return;
+
+            try {
+                const response = await fetch('/api/user/delete-account', {
+                    method: 'DELETE',
+                    credentials: 'include', // <---- include cookies
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.message || 'Failed to delete account');
+                }
+
+                alert('Your account has been deleted.');
+                // Optionally clear tokens or cookies here if stored client-side
+                window.location.href = 'landing-page.html';
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        });
+
+        // Log out button clears client token and redirects
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            // If you store JWT in cookie, also clear it from server with an API call if needed
+            alert('You have been logged out.');
+            window.location.href = 'log-in.html';
+        });
+    </script>
+</body>
+</html>

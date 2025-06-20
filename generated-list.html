@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My List</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="header">
+    <h1 id="listName" contenteditable="true" spellcheck="false" aria-label="List name">Loading...</h1>
+    <button id="saveNameBtn">Save Name</button>
+    <p id="saveStatus" style="display:none;">Saved!</p>
+  </div>
+
+  <div class="list-details" id="listDetails">
+    <!-- List details will go here -->
+  </div>
+
+  <script>
+    async function fetchList() {
+  const listNameEl = document.getElementById('listName');
+  const saveBtn = document.getElementById('saveNameBtn');
+
+  const params = new URLSearchParams(window.location.search);
+  const listId = params.get('id');
+  if (!listId) {
+    alert('No list ID provided');
+    listNameEl.setAttribute('contenteditable', 'false');
+    listNameEl.style.cursor = 'not-allowed';
+    listNameEl.style.color = '#aaa';
+    saveBtn.disabled = true;
+    listNameEl.innerText = 'List ID missing';
+    return;
+  }
+
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('You need to be logged in to view this page.');
+    listNameEl.setAttribute('contenteditable', 'false');
+    listNameEl.style.cursor = 'not-allowed';
+    listNameEl.style.color = '#aaa';
+    saveBtn.disabled = true;
+    listNameEl.innerText = 'Not logged in';
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/lists/${listId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error('Failed to fetch list.');
+
+    const list = await res.json();
+    listNameEl.innerText = list.listName || 'Untitled List';
+
+    // Re-enable editing and button if it was disabled before
+    listNameEl.setAttribute('contenteditable', 'true');
+    listNameEl.style.cursor = 'text';
+    listNameEl.style.color = '#000';
+    saveBtn.disabled = false;
+
+    // populate other details as before...
+
+  } catch (err) {
+    alert(err.message);
+    listNameEl.setAttribute('contenteditable', 'false');
+    listNameEl.style.cursor = 'not-allowed';
+    listNameEl.style.color = '#aaa';
+    saveBtn.disabled = true;
+    listNameEl.innerText = 'Failed to load list';
+  }
+}
+
+    async function saveListName() {
+      const newName = document.getElementById('listName').innerText.trim();
+      if (!newName) {
+        alert('List name cannot be empty.');
+        return;
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const listId = params.get('id');
+      const token = localStorage.getItem('token');
+
+      try {
+        document.getElementById('saveNameBtn').disabled = true;
+        document.getElementById('saveStatus').style.display = 'none';
+
+        const res = await fetch(`/api/lists/${listId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ listName: newName }),
+        });
+
+        if (!res.ok) throw new Error('Failed to update list name.');
+
+        document.getElementById('saveStatus').style.display = 'inline';
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        document.getElementById('saveNameBtn').disabled = false;
+      }
+    }
+
+    document.getElementById('saveNameBtn').addEventListener('click', saveListName);
+
+    window.addEventListener('DOMContentLoaded', fetchList);
+  </script>
+</body>
+
+</html>

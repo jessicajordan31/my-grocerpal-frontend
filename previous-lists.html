@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Lists</title>
+    <link rel = "stylesheet" href="style.css">
+    <style>
+        .list-item { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1rem; border-radius: 5px; }
+        .list-item h2 { margin: 0 0 0.5rem; }
+        .list-item p { margin: 0.2rem 0; }
+  </style>
+</head>
+
+<body>
+    <div class = "account-header">
+        <img class="photo" src = "grocer-photo.png" width="250">
+        <h1>Previous Lists</h1>
+    </div>
+    <div class = "back-to-home-btn">
+        <button class = "acct-btn" style = "font-weight: normal;"><a href="landing-page.html">Back to homepage</a></button><br>
+    </div>
+      <div id="lists-container"></div>
+
+<script>
+    async function fetchLists() {
+      const container = document.getElementById('listsContainer');
+      container.innerHTML = 'Loading your lists...';
+
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          container.innerHTML = 'You need to log in first.';
+          return;
+        }
+
+        const response = await fetch('/api/lists', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch lists');
+        }
+
+        const lists = await response.json();
+
+        if (lists.length === 0) {
+          container.innerHTML = '<p>No lists found. Create a new list!</p>';
+          return;
+        }
+
+        container.innerHTML = '';
+        lists.forEach(list => {
+          const listDiv = document.createElement('div');
+          listDiv.className = 'list-item';
+
+          listDiv.innerHTML = `
+            <h2>${list.listName}</h2>
+            <p><strong>Diet Type:</strong> ${list.dietType || 'N/A'}</p>
+            <p><strong>Allergies:</strong> ${list.allergies && list.allergies.length > 0 ? list.allergies.join(', ') : 'None'}</p>
+            <p><strong>Max Cost:</strong> ${list.maxCost || 'N/A'}</p>
+            <p><strong>Serving Size:</strong> ${list.servingSize || 'N/A'}</p>
+            <p><strong>Duration:</strong> ${list.duration || 'N/A'}</p>
+            <p><small>Created At: ${new Date(list.createdAt).toLocaleString()}</small></p>
+          `;
+
+          container.appendChild(listDiv);
+        });
+      } catch (error) {
+        container.innerHTML = `<p>Error loading lists: ${error.message}</p>`;
+      }
+    }
+
+    // Fetch lists when page loads
+    window.addEventListener('DOMContentLoaded', fetchLists);
+  </script>
+</body>
+</html>
+
