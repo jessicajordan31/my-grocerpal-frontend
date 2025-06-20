@@ -117,13 +117,13 @@ passwordForm.addEventListener('submit', async (e) => {
   try {
     const response = await fetch('/api/user/change-password', {
       method: 'POST',
-      credentials: 'include',  // send cookie token
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password: newPassword })
     });
 
     if (!response.ok) {
-      const errData = await response.json();
+      const errData = await response.json().catch(() => ({}));
       throw new Error(errData.message || 'Failed to change password');
     }
 
