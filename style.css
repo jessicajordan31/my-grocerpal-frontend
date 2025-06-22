@@ -506,3 +506,28 @@ h2{
 }
 
 /* generated list */
+
+#groceryList, #recipeList {
+  margin: 20px;
+  font-size: 16px;
+}
+
+.recipe-card {
+  border: 1px solid #ccc;
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background-color: #fdfdfd;
+}
+
+.action-buttons {
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+.action-buttons button {
+  margin-right: 10px;
+  padding: 6px 12px;
+  font-size: 14px;
+}
+

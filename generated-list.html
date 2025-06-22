@@ -6,6 +6,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>My List</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    #groceryList,
+    #recipeList {
+      margin: 20px;
+      font-size: 16px;
+    }
+
+    .recipe-card {
+      border: 1px solid #ccc;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      background-color: #fdfdfd;
+    }
+
+    .recipe-card h3 {
+      margin-top: 0;
+    }
+
+    h2 {
+      margin-left: 20px;
+    }
+  </style>
 </head>
 
 <body>
@@ -15,65 +38,139 @@
     <p id="saveStatus" style="display:none;">Saved!</p>
   </div>
 
+  <div class="action-buttons">
+    <button id="printBtn">Print List</button>
+    <button id="shareBtn">Copy Shareable Link</button>
+    <p id="shareStatus" style="display:none;">Link copied to clipboard!</p>
+  </div>
+
+
   <div class="list-details" id="listDetails">
     <!-- List details will go here -->
   </div>
 
+  <div id="groceryList">
+    <!-- Grocery list gets injected here -->
+  </div>
+
+  <div id="recipeList">
+    <!-- Recipes get injected here -->
+  </div>
+
   <script>
     async function fetchList() {
-  const listNameEl = document.getElementById('listName');
-  const saveBtn = document.getElementById('saveNameBtn');
+      const listNameEl = document.getElementById('listName');
+      const saveBtn = document.getElementById('saveNameBtn');
 
-  const params = new URLSearchParams(window.location.search);
-  const listId = params.get('id');
-  if (!listId) {
-    alert('No list ID provided');
-    listNameEl.setAttribute('contenteditable', 'false');
-    listNameEl.style.cursor = 'not-allowed';
-    listNameEl.style.color = '#aaa';
-    saveBtn.disabled = true;
-    listNameEl.innerText = 'List ID missing';
-    return;
-  }
+      const params = new URLSearchParams(window.location.search);
+      const listId = params.get('id');
+      if (!listId) {
+        alert('No list ID provided');
+        listNameEl.setAttribute('contenteditable', 'false');
+        listNameEl.style.cursor = 'not-allowed';
+        listNameEl.style.color = '#aaa';
+        saveBtn.disabled = true;
+        listNameEl.innerText = 'List ID missing';
+        return;
+      }
 
-  const token = localStorage.getItem('token');
-  if (!token) {
-    alert('You need to be logged in to view this page.');
-    listNameEl.setAttribute('contenteditable', 'false');
-    listNameEl.style.cursor = 'not-allowed';
-    listNameEl.style.color = '#aaa';
-    saveBtn.disabled = true;
-    listNameEl.innerText = 'Not logged in';
-    return;
-  }
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('You need to be logged in to view this page.');
+        listNameEl.setAttribute('contenteditable', 'false');
+        listNameEl.style.cursor = 'not-allowed';
+        listNameEl.style.color = '#aaa';
+        saveBtn.disabled = true;
+        listNameEl.innerText = 'Not logged in';
+        return;
+      }
 
-  try {
-    const res = await fetch(`/api/lists/${listId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+      try {
+        const res = await fetch(`/api/lists/${listId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-    if (!res.ok) throw new Error('Failed to fetch list.');
+        if (!res.ok) throw new Error('Failed to fetch list.');
 
-    const list = await res.json();
-    listNameEl.innerText = list.listName || 'Untitled List';
+        const list = await res.json();
+        listNameEl.innerText = list.listName || 'Untitled List';
 
-    // Re-enable editing and button if it was disabled before
-    listNameEl.setAttribute('contenteditable', 'true');
-    listNameEl.style.cursor = 'text';
-    listNameEl.style.color = '#000';
-    saveBtn.disabled = false;
+        listNameEl.setAttribute('contenteditable', 'true');
+        listNameEl.style.cursor = 'text';
+        listNameEl.style.color = '#000';
+        saveBtn.disabled = false;
 
-    // populate other details as before...
+        const groceryDiv = document.getElementById('groceryList');
+        const recipeDiv = document.getElementById('recipeList');
 
-  } catch (err) {
-    alert(err.message);
-    listNameEl.setAttribute('contenteditable', 'false');
-    listNameEl.style.cursor = 'not-allowed';
-    listNameEl.style.color = '#aaa';
-    saveBtn.disabled = true;
-    listNameEl.innerText = 'Failed to load list';
-  }
-}
+        if (list.generatedData) {
+          const {
+            Produce,
+            Dairy,
+            MeatProtein,
+            FreezerGoods,
+            CannedGoods,
+            OtherGroceryItems,
+            recipes,
+          } = list.generatedData;
+
+          function renderCategory(name, items) {
+            if (!items || items.length === 0) return '';
+            const itemsHtml = items
+              .map(
+                (item) =>
+                  `<li>${item.Item} - Qty: ${item.Quantity} - $${item.Price.toFixed(
+                    2
+                  )}</li>`
+              )
+              .join('');
+            return `<h3>${name}</h3><ul>${itemsHtml}</ul>`;
+          }
+
+          const groceryHTML = `
+            <h2>Grocery List</h2>
+            ${renderCategory('Produce', Produce)}
+            ${renderCategory('Dairy', Dairy)}
+            ${renderCategory('Meat/Protein', MeatProtein)}
+            ${renderCategory('Freezer Goods', FreezerGoods)}
+            ${renderCategory('Canned Goods', CannedGoods)}
+            ${renderCategory('Other Items', OtherGroceryItems)}
+          `;
+          groceryDiv.innerHTML = groceryHTML;
+
+          const recipeHTML = recipes
+            .map(
+              (recipe) => `
+              <div class="recipe-card">
+                <h3>${recipe.title}</h3>
+                <p>${recipe.description}</p>
+                <strong>Ingredients:</strong>
+                <ul>${recipe.ingredients
+                  .map((ing) => `<li>${ing.quantity} ${ing.item}</li>`)
+                  .join('')}</ul>
+                <strong>Instructions:</strong>
+                <ol>${recipe.instructions
+                  .map((step) => `<li>${step}</li>`)
+                  .join('')}</ol>
+                <p><em>Prep: ${recipe.prepTimeMinutes} min, Cook: ${recipe.cookTimeMinutes} min, Servings: ${recipe.servings}</em></p>
+              </div>
+            `
+            )
+            .join('');
+          recipeDiv.innerHTML = `<h2>Recipes</h2>${recipeHTML}`;
+        } else {
+          groceryDiv.innerHTML = `<p>No generated data found for this list.</p>`;
+          recipeDiv.innerHTML = '';
+        }
+      } catch (err) {
+        alert(err.message);
+        listNameEl.setAttribute('contenteditable', 'false');
+        listNameEl.style.cursor = 'not-allowed';
+        listNameEl.style.color = '#aaa';
+        saveBtn.disabled = true;
+        listNameEl.innerText = 'Failed to load list';
+      }
+    }
 
     async function saveListName() {
       const newName = document.getElementById('listName').innerText.trim();
@@ -112,6 +209,22 @@
     document.getElementById('saveNameBtn').addEventListener('click', saveListName);
 
     window.addEventListener('DOMContentLoaded', fetchList);
+
+    document.getElementById('printBtn').addEventListener('click', () => {
+      window.print();
+    });
+
+    document.getElementById('shareBtn').addEventListener('click', () => {
+      const url = window.location.href;
+      navigator.clipboard.writeText(url).then(() => {
+        const status = document.getElementById('shareStatus');
+        status.style.display = 'inline';
+        setTimeout(() => {
+          status.style.display = 'none';
+        }, 2000);
+      });
+    });
+
   </script>
 </body>
 

@@ -95,14 +95,24 @@ generateBtn.addEventListener('click', async (e) => {
         generateBtn.innerText = 'Saving...';
 
         const token = localStorage.getItem('token');
-        const response = await fetch('/api/lists', {
+    //    const response = await fetch('/api/lists/generate', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //         'Authorization': `Bearer ${token}`
+    //     },
+    //     credentials: 'include',
+    //     body: JSON.stringify(newListData)
+        const response = await fetch('http://localhost:3000/api/lists/generate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(newListData)
+        },
+        credentials: 'include',
+        body: JSON.stringify(newListData)
         });
+
 
         if (!response.ok) throw new Error('Failed to save list');
         const data = await response.json();
@@ -118,3 +128,5 @@ generateBtn.addEventListener('click', async (e) => {
         generateBtn.innerText = 'Generate List';
     }
 });
+
+
