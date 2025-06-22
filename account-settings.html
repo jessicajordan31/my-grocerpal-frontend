@@ -19,10 +19,11 @@
         </button><br />
     </div>
     <div class="account-info">
-        <h2>Name: <span id="userName"></span></h2><br /><br />
-        <h2>Email: <span id="userEmail"></span></h2><br /><br />
-        <h2>Password: <input type="password" id="userPassword" value="********" readonly /></h2>
+      <p><strong>Name:</strong> <span id="userName"></span></p><br />
+      <p><strong>Email:</strong> <span id="userEmail"></span></p><br />
+      <p><strong>Password:</strong> <input type="password" id="userPassword" value="********" readonly /></p>
     </div>
+
     <!-- Password Change Modal -->
 <div id="passwordModal" class="modal" style="display:none;">
   <div class="modal-content">
@@ -54,8 +55,8 @@
 async function loadUserInfo() {
   try {
     const response = await fetch('http://localhost:3000/api/user/profile', {
-      credentials: 'include',  // this is important to send cookies
       method: 'GET',
+      credentials: 'include',  // send cookies
     });
 
     if (!response.ok) throw new Error('Failed to fetch user info');
