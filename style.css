@@ -531,3 +531,37 @@ h2{
   font-size: 14px;
 }
 
+.grocery-section {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-left: 4px solid #89A;
+  background-color: #fefefe;
+  border-radius: 8px;
+}
+
+.section-title {
+  font-size: 1.2em;
+  color: #354;
+  margin-bottom: 8px;
+}
+
+.item-list {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.item-line {
+  margin-bottom: 4px;
+  font-family: 'Helvetica', sans-serif;
+}
+
+.recipe-card h3 {
+  font-size: 1.2em;
+  color: #333;
+}
+
+.recipe-card ul,
+.recipe-card ol {
+  padding-left: 20px;
+  margin-top: 5px;
+}

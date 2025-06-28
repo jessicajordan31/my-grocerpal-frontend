@@ -124,7 +124,18 @@
                   )}</li>`
               )
               .join('');
-            return `<h3>${name}</h3><ul>${itemsHtml}</ul>`;
+            return `
+              <div class="grocery-section">
+                <h3 class="section-title">${name}</h3>
+                <ul class="item-list">
+                  ${items
+                    .map(
+                      (item) =>
+                        `<li class="item-line">${item.Item} - Qty: ${item.Quantity} - $${item.Price.toFixed(2)}</li>`
+                    )
+                  .join('')}
+                 </ul>
+              </div>`;
           }
 
           const groceryHTML = `

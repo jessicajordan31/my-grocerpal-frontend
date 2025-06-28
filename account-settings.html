@@ -116,7 +116,7 @@ passwordForm.addEventListener('submit', async (e) => {
   }
 
   try {
-    const response = await fetch('/api/user/change-password', {
+    const response = await fetch('http://localhost:3000/api/user/change-password', {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -143,7 +143,7 @@ passwordForm.addEventListener('submit', async (e) => {
             if (!confirmDelete) return;
 
             try {
-                const response = await fetch('/api/user/delete-account', {
+                const response = await fetch('http://localhost:3000/api/user/delete-account', {
                     method: 'DELETE',
                     credentials: 'include', // <---- include cookies
                 });
@@ -155,7 +155,7 @@ passwordForm.addEventListener('submit', async (e) => {
 
                 alert('Your account has been deleted.');
                 // Optionally clear tokens or cookies here if stored client-side
-                window.location.href = 'landing-page.html';
+                window.location.href = 'home.html';
             } catch (err) {
                 alert('Error: ' + err.message);
             }
