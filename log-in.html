@@ -140,6 +140,8 @@
 
       localStorage.setItem('userName', data.name);
       localStorage.setItem('userEmail', data.email);
+      localStorage.setItem('token', data.token);
+
 
       // Redirect or load another page here if needed
       window.location.href = 'landing-page.html';
@@ -174,6 +176,7 @@
     document.getElementById('signupMessage').textContent = 'Signup successful! Redirecting...';
 
     // Optionally store user info
+    localStorage.setItem('token', data.token);
     localStorage.setItem('userName', data.name);
     localStorage.setItem('userEmail', data.email);
 

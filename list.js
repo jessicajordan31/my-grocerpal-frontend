@@ -109,10 +109,11 @@ generateBtn.addEventListener('click', async (e) => {
         if (!response.ok) throw new Error('Failed to save list');
         const data = await response.json();
         console.log('List saved:', data);
-        //window.location.href = `generated-list.html?id=${data._id}`;
 
         /* CHANGE WINDOW.LOCATION to generated list */
-        window.location.href = `generated-list.html?id=${newListId}`;
+        window.location.href = "./generated-list.html?id=" + data._id;
+
+       // window.location.href = `generated-list.html?id=${data._id}`;
     } catch (err) {
         console.error('Error saving list:', err);
         alert('Error saving your list. Please try again.');
