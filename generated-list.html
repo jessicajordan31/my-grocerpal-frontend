@@ -58,6 +58,8 @@
   </div>
 
   <script>
+    const API_BASE_URL = 'http://localhost:3000';
+    
     async function fetchList() {
       const listNameEl = document.getElementById('listName');
       const saveBtn = document.getElementById('saveNameBtn');
@@ -86,7 +88,7 @@
       }
 
       try {
-        const res = await fetch(`/api/lists/${listId}`, {
+        const res = await fetch(`${API_BASE_URL}/api/lists/${listId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -198,7 +200,7 @@
         document.getElementById('saveNameBtn').disabled = true;
         document.getElementById('saveStatus').style.display = 'none';
 
-        const res = await fetch(`/api/lists/${listId}`, {
+        const res = await fetch(`${API_BASE_URL}/api/lists/${listId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
