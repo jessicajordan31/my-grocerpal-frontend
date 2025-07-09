@@ -110,10 +110,9 @@ generateBtn.addEventListener('click', async (e) => {
         const data = await response.json();
         console.log('List saved:', data);
 
-        /* CHANGE WINDOW.LOCATION to generated list */
+        /* change window to generated list */
         window.location.href = "./generated-list.html?id=" + data._id;
-
-       // window.location.href = `generated-list.html?id=${data._id}`;
+        
     } catch (err) {
         console.error('Error saving list:', err);
         alert('Error saving your list. Please try again.');

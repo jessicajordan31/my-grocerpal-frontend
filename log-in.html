@@ -118,7 +118,6 @@
       loginForm.classList.remove('active');
     });
 
-    // Example form submission handlers
     loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = document.getElementById('loginEmail').value;
@@ -143,7 +142,7 @@
       localStorage.setItem('token', data.token);
 
 
-      // Redirect or load another page here if needed
+      // Redirect to landing-page
       window.location.href = 'landing-page.html';
     } else {
       console.log('Login failed:', data);
@@ -165,7 +164,7 @@
   const res = await fetch(`${API_BASE_URL}/signup`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    credentials: 'include', // ✅ Allow browser to store JWT cookie
+    credentials: 'include',
     body: JSON.stringify({ name, email, password }),
   });
 
@@ -175,7 +174,7 @@
     document.getElementById('signupMessage').style.color = 'green';
     document.getElementById('signupMessage').textContent = 'Signup successful! Redirecting...';
 
-    // Optionally store user info
+    // store user info
     localStorage.setItem('token', data.token);
     localStorage.setItem('userName', data.name);
     localStorage.setItem('userEmail', data.email);

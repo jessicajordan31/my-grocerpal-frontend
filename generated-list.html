@@ -86,8 +86,9 @@
       }
 
       try {
-        const res = await fetch(`/api/lists/${listId}`, {
+        const res = await fetch(`http://localhost:3000/api/lists/${listId}`, {
           headers: { Authorization: `Bearer ${token}` },
+          credentials: 'include',
         });
 
         if (!res.ok) throw new Error('Failed to fetch list.');
@@ -198,13 +199,14 @@
         document.getElementById('saveNameBtn').disabled = true;
         document.getElementById('saveStatus').style.display = 'none';
 
-        const res = await fetch(`/api/lists/${listId}`, {
+        const res = await fetch(`http://localhost:3000/api/lists/${listId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ listName: newName }),
+          credentials: 'include',
         });
 
         if (!res.ok) throw new Error('Failed to update list name.');
