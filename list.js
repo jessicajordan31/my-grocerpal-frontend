@@ -95,7 +95,12 @@ generateBtn.addEventListener('click', async (e) => {
         generateBtn.innerText = 'Saving...';
 
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:3000/api/lists/generate', {
+        const apiUrl = 'http://localhost:3000/api/lists/generate';
+        console.log('Making request to:', apiUrl);
+        console.log('Token:', token ? 'Present' : 'Missing');
+        console.log('Request data:', newListData);
+        
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -106,7 +111,12 @@ generateBtn.addEventListener('click', async (e) => {
         });
 
 
-        if (!response.ok) throw new Error('Failed to save list');
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.log('Response status:', response.status);
+            console.log('Response error:', errorText);
+            throw new Error(`Failed to save list: ${response.status} - ${errorText}`);
+        }
         const data = await response.json();
         console.log('List saved:', data);
 
