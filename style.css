@@ -523,25 +523,38 @@ h2{
 .action-buttons {
   margin-left: 20px;
   margin-top: 10px;
+  text-align: center;
 }
 
 .action-buttons button {
   margin-right: 10px;
   padding: 6px 12px;
   font-size: 14px;
+  background-color: #efb79f;
+  border-radius: 20px;
+  font-size: 20px;
+  padding: 10px 60px;
+  cursor: pointer;
+  transition-duration: 0.4s;
+  margin-bottom: 15px;
+}
+
+.action-buttons button:hover{
+  background-color: #f7dacd;
+  border: 2px solid #efb79f;
 }
 
 .grocery-section {
   margin-bottom: 20px;
   padding: 10px;
-  border-left: 4px solid #89A;
+  border-left: 4px solid #efb79f;
   background-color: #fefefe;
   border-radius: 8px;
 }
 
 .section-title {
   font-size: 1.2em;
-  color: #354;
+  color: #000;
   margin-bottom: 8px;
 }
 
@@ -552,16 +565,18 @@ h2{
 
 .item-line {
   margin-bottom: 4px;
-  font-family: 'Helvetica', sans-serif;
+  font-family:Georgia, sans-serif;
 }
 
 .recipe-card h3 {
   font-size: 1.2em;
-  color: #333;
+  color: #000;
+  padding-bottom: 15px;
 }
 
 .recipe-card ul,
 .recipe-card ol {
   padding-left: 20px;
-  margin-top: 5px;
+  margin-top: 10px;
+  padding-bottom: 5px;
 }
