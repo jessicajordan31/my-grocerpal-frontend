@@ -509,7 +509,7 @@ h2{
 
 #groceryList, #recipeList {
   margin: 20px;
-  font-size: 16px;
+  font-size: 20px;
 }
 
 .recipe-card {
@@ -550,6 +550,8 @@ h2{
   border-left: 4px solid #efb79f;
   background-color: #fefefe;
   border-radius: 8px;
+  margin-left: 70px;
+  margin-right: 70px;
 }
 
 .section-title {
@@ -566,6 +568,25 @@ h2{
 .item-line {
   margin-bottom: 4px;
   font-family:Georgia, sans-serif;
+}
+
+#recipe-list{
+  margin-bottom: 20px;
+  padding: 10px;
+  border-left: 4px solid #efb79f;
+  background-color: #fefefe;
+  border-radius: 8px;
+  margin-left: 70px;
+}
+
+.recipe-card{
+  margin-bottom: 20px;
+  padding: 10px;
+  border-left: 4px solid #efb79f;
+  background-color: #fefefe;
+  border-radius: 8px;
+  margin-left: 70px;
+  margin-right: 70px;
 }
 
 .recipe-card h3 {

@@ -131,36 +131,3 @@ generateBtn.addEventListener('click', async (e) => {
         generateBtn.innerText = 'Generate List';
     }
 });
-
-
-document.getElementById('returnbtn').addEventListener('click', async () => {
-  const newName = document.getElementById('listName').innerText.trim();
-  const params = new URLSearchParams(window.location.search);
-  const listId = params.get('id');
-  const token = localStorage.getItem('token');
-
-  if (!newName) {
-    alert('List name cannot be empty.');
-    return;
-  }
-
-  try {
-    // Save the list name
-    const res = await fetch(`${API_BASE_URL}/api/lists/${listId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ listName: newName }),
-      credentials: 'include',
-    });
-
-    if (!res.ok) throw new Error('Failed to save list before redirect.');
-
-    // Redirect to homepage after successful save
-    window.location.href = 'landing-page.html';
-  } catch (err) {
-    alert('Error saving list: ' + err.message);
-  }
-});
